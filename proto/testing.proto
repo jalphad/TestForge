@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "github.com/jalphad/testforge/proto";
+
+service TestingService {
+  // Get available test cases
+  rpc ListTestCases(ListTestCasesRequest) returns (ListTestCasesResponse);
+
+  // Get specific test case
+  rpc GetTestCase(GetTestCaseRequest) returns (GetTestCaseResponse);
+
+  // Submit solution for verification
+  rpc SubmitSolution(SubmitSolutionRequest) returns (SubmitSolutionResponse);
+
+//  // Stream multiple test cases
+//  rpc StreamTestCases(StreamTestCasesRequest) returns (stream TestCaseData);
+//
+//  // Real-time testing session
+//  rpc TestingSession(stream TestingSessionMessage) returns (stream TestingSessionMessage);
+}
+
+message TestCaseInfo {
+  string id = 1;
+  string description = 2;
+  repeated string categories = 3;
+  string difficulty = 4;
+  int64 timeout_seconds = 5;
+  map<string, string> metadata = 6;
+}
+
+message TestCaseData {
+  string id = 1;
+  bytes input = 2;
+  map<string, string> hints = 3;
+}
+
+message SubmitSolutionRequest {
+  string test_case_id = 1;
+  bytes response = 2;
+  string client_id = 3;
+  map<string, string> metadata = 4;
+}
+
+message SubmitSolutionResponse {
+  bool valid = 1;
+  double score = 2;
+  string message = 3;
+  map<string, string> details = 4;
+  map<string, double> metrics = 5;
+  int64 execution_time_ms = 6;
+}
+
+message ListTestCasesRequest {
+  repeated string categories = 1;
+  string difficulty = 2;
+  int32 limit = 3;
+  string cursor = 4;
+}
+
+message ListTestCasesResponse {
+  repeated TestCaseInfo test_cases = 1;
+  string next_cursor = 2;
+}
+
+message GetTestCaseRequest {
+  string id = 1;
+}
+
+message GetTestCaseResponse {
+  TestCaseInfo info = 1;
+  TestCaseData data = 2;
+}
