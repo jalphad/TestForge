@@ -31,19 +31,22 @@
             gocode-gomod
             godef
             golint
+            nodejs_24
           ];
           packages = with pkgs; [
             protobuf_32
           ];
           shellHook = ''
             export PATH="$PATH:$(go env GOPATH)/bin"
+            npm set prefix ~/.npm-global
+            export PATH=$PATH:$HOME/.npm-global/bin
           '';
           GOROOT="${pkgs.go}/share/go";
           GOPROXY="https://proxy.golang.org";
           CGO_CFLAGS="-O2 -g -Wno-error";
           CFLAGS="-I${pkgs.glibc.dev}/include";
           LDFLAGS="-L${glibcStatic}/lib";
-          CGO_ENABLED=1;
+          CGO_ENABLED=0;
         };
       });
 }
